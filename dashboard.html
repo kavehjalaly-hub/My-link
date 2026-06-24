@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>داشبورد آمار</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#1a1a2e;color:#eee;padding:15px}
+h1{text-align:center;color:#6C63FF;margin-bottom:20px;font-size:22px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.card{background:#16213e;border-radius:12px;padding:15px;text-align:center}
+.card .num{font-size:32px;font-weight:bold;color:#6C63FF}
+.card .label{font-size:12px;color:#aaa;margin-top:5px}
+.section{background:#16213e;border-radius:12px;padding:15px;margin-bottom:15px}
+.section h2{font-size:16px;margin-bottom:15px;color:#6C63FF}
+.bar-item{margin-bottom:10px}
+.bar-label{font-size:12px;margin-bottom:4px;display:flex;justify-content:space-between}
+.bar{background:#0f3460;border-radius:10px;height:10px}
+.bar-fill{background:#6C63FF;border-radius:10px;height:10px}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{background:#0f3460;padding:8px 5px;text-align:right;color:#aaa}
+td{padding:8px 5px;border-bottom:1px solid #0f3460}
+.vpn-yes{color:#ff6b6b}
+.vpn-no{color:#51cf66}
+.refresh{display:block;width:100%;padding:12px;background:#6C63FF;color:white;border:none;border-radius:10px;font-size:14px;cursor:pointer;margin-bottom:20px}
+</style>
+</head>
+<body>
+<h1>📊 داشبورد آمار</h1>
+<button class="refresh" onclick="loadData()">🔄 بروزرسانی</button>
+<div class="cards">
+<div class="card"><div class="num" id="total">...</div><div class="label">کل بازدید</div></div>
+<div class="card"><div class="num" id="today">...</div><div class="label">امروز</div></div>
+<div class="card"><div class="num" id="vpn_count">...</div><div class="label">با VPN</div></div>
+<div class="card"><div class="num" id="direct_count">...</div><div class="label">مستقیم</div></div>
+</div>
+<div class="section"><h2>📱 دستگاه‌ها</h2><div id="devices">در حال بارگذاری...</div></div>
+<div class="section"><h2>🌐 مرورگرها</h2><div id="browsers">در حال بارگذاری...</div></div>
+<div class="section"><h2>👥 آخرین بازدیدکننده‌ها</h2><div style="overflow-x:auto"><table><thead><tr><th>زمان</th><th>دستگاه</th><th>VPN</th><th>باتری</th></tr></thead><tbody id="visitors"><tr><td colspan="4">در حال بارگذاری...</td></tr></tbody></table></div></div>
+<script>
+const SUPABASE_URL="https://ggntzixdkcxjhbasygdy.supabase.co";
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnbnR6aXhka2N4amhiYXN5Z2R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNDkzODUsImV4cCI6MjA5NzgyNTM4NX0.1sod-e4uzip9vraXk_wyn7TKUXKl7KUPkS9NMyArN14";
+async function loadData(){
+try{
+const res=await fetch(SUPABASE_URL+"/rest/v1/visitors?order=created_at.desc&limit=100",{headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}});
+const data=await res.json();
+document.getElementById("total").textContent=data.length;
+const today=new Date().toDateString();
+document.getElementById("today").textContent=data.filter(v=>new Date(v.created_at).toDateString()===today).length;
+const vpnCount=data.filter(v=>v.is_vpn&&v.is_vpn.includes("VPN")).length;
+document.getElementById("vpn_count").textContent=vpnCount;
+document.getElementById("direct_count").textContent=data.length-vpnCount;
+const devices={};
+data.forEach(v=>{if(v.device)devices[v.device]=(devices[v.device]||0)+1});
+document.getElementById("devices").innerHTML=Object.entries(devices).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="bar-item"><div class="bar-label"><span>${k}</span><span>${v}</span></div><div class="bar"><div class="bar-fill" style="width:${Math.round(v/data.length*100)}%"></div></div></div>`).join("")||"بازدیدی ثبت نشده";
+const browsers={};
+data.forEach(v=>{if(v.browser)browsers[v.browser]=(browsers[v.browser]||0)+1});
+document.getElementById("browsers").innerHTML=Object.entries(browsers).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="bar-item"><div class="bar-label"><span>${k}</span><span>${v}</span></div><div class="bar"><div class="bar-fill" style="width:${Math.round(v/data.length*100)}%"></div></div></div>`).join("")||"بازدیدی ثبت نشده";
+document.getElementById("visitors").innerHTML=data.slice(0,20).map(v=>`<tr><td>${new Date(v.created_at).toLocaleString("fa-IR")}</td><td>${v.device||"؟"}</td><td class="${v.is_vpn&&v.is_vpn.includes("VPN")?"vpn-yes":"vpn-no"}">${v.is_vpn||"؟"}</td><td>${v.battery||"؟"}</td></tr>`).join("")||"<tr><td colspan='4'>بازدیدی ثبت نشده</td></tr>";
+}catch(e){console.error(e)}
+}
+loadData();
+</script>
+</body>
+</html>
